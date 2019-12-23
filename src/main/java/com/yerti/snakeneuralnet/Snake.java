@@ -70,6 +70,7 @@ class Snake {
         if (panel.getApple().contains((int) newHead.getX() + 25, (int) newHead.getY() + 25)) {
             panel.getApple().delete();
             panel.getApple().spawn();
+            panel.addPoints(1);
         }
 
         body.add(newHead);
@@ -80,29 +81,29 @@ class Snake {
 
     }
 
-    public void setDirection(Direction direction) {
+    void setDirection(Direction direction) {
         this.direction = direction;
     }
 
-    public boolean containsSnake(double x, double y) {
+    boolean containsSnake(double x, double y) {
         return body.stream().anyMatch(rectangle -> rectangle.contains(x, y));
     }
 
-    public boolean containsCoHeadSnake(double x, double y) {
+    boolean containsCoHeadSnake(double x, double y) {
         return body.stream().anyMatch(rectangle -> rectangle.contains(x, y) && body.indexOf(rectangle) != body.size() - 2);
 
 
     }
 
-    public Rectangle getHead() {
+    Rectangle getHead() {
         return body.get(body.size() - 1);
     }
 
-    public void setSnakeColor(Color snakeColor) {
+    void setSnakeColor(Color snakeColor) {
         this.snakeColor = snakeColor;
     }
 
-    public void buildBody() {
+    void buildBody() {
         if (!body.isEmpty()) body.clear();
 
         for (int i = 0; i < STARTING_SIZE; i++) {
@@ -110,7 +111,7 @@ class Snake {
         }
     }
 
-    public Color getSnakeColor() {
+    Color getSnakeColor() {
         return snakeColor;
     }
 }

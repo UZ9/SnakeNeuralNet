@@ -13,6 +13,7 @@ import java.util.Random;
 
 class GamePanel extends JPanel implements KeyListener, ActionListener {
 
+    private int score;
     private boolean feelerDebug = false;
     private Snake snake;
     private Apple apple;
@@ -32,8 +33,8 @@ class GamePanel extends JPanel implements KeyListener, ActionListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        //g.setColor(Color.WHITE);
-        //g.drawString("Head: " + snake.getHead().getX() + ", " + snake.getHead().getY(), 50, 50);
+        g.setColor(Color.WHITE);
+        g.drawString("Score: " + score, 50, 50);
         Graphics2D g2 = (Graphics2D) g;
 
         snake.draw(g);
@@ -81,7 +82,6 @@ class GamePanel extends JPanel implements KeyListener, ActionListener {
         int headY = snake.getHead().y;
 
         if (e.getKeyChar() == 'w') {
-            System.out.println("pressed w");
             if (snake.containsCoHeadSnake(headX + 5, headY - 5)) {
                 snake.setSnakeColor(Color.RED);
                 repaint();
@@ -141,6 +141,10 @@ class GamePanel extends JPanel implements KeyListener, ActionListener {
 
     Apple getApple() {
         return apple;
+    }
+
+    void addPoints(int amount) {
+        score += amount;
     }
 
 

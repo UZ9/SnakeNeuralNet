@@ -33,7 +33,7 @@ class Snake {
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.RED);
-        g2.drawRect(110, 110, 2200, 1100);
+        g2.drawRect(100, 100, 2200, 1100);
         g2.setColor(snakeColor);
         for (Rectangle rectangle : body) {
                 g2.fill(rectangle);
@@ -65,6 +65,13 @@ class Snake {
 
         if (newHead.getX() > 2300 || newHead.getY() > 1200 || newHead.getX() < 100 || newHead.getY() < 100) snakeColor = Color.RED;
 
+        if (containsSnake(newHead.getX(), newHead.getY())) snakeColor = Color.RED;
+        //Check if the center of the snake is inside of the apple
+        if (panel.getApple().contains((int) newHead.getX() + 25, (int) newHead.getY() + 25)) {
+            panel.getApple().delete();
+            panel.getApple().spawn();
+        }
+
         body.add(newHead);
         panel.repaint();
 
@@ -82,7 +89,7 @@ class Snake {
     }
 
     public boolean containsCoHeadSnake(double x, double y) {
-        return body.stream().anyMatch(rectangle -> rectangle.contains(x, y) && body.indexOf(rectangle) != body.indexOf(getHead()));
+        return body.stream().anyMatch(rectangle -> rectangle.contains(x, y) && body.indexOf(rectangle) != body.size() - 2);
 
 
     }
@@ -99,7 +106,7 @@ class Snake {
         if (!body.isEmpty()) body.clear();
 
         for (int i = 0; i < STARTING_SIZE; i++) {
-            body.add(new Rectangle(i * 50 + 110, 110, 50, 50));
+            body.add(new Rectangle(i * 50 + 100, 100, 50, 50));
         }
     }
 

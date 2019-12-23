@@ -68,6 +68,7 @@ public class GameLoop implements Runnable {
 
             if (System.currentTimeMillis() - snakeInterval > SNAKE_SPEED) {
                 panel.getSnake().move();
+
                 snakeInterval += SNAKE_SPEED;
             }
         }

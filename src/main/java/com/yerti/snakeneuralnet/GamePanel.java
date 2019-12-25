@@ -1,19 +1,21 @@
 package com.yerti.snakeneuralnet;
 
-import com.sun.javafx.scene.traversal.Direction;
 
-import javax.sound.sampled.Line;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Random;
 
 class GamePanel extends JPanel implements KeyListener, ActionListener {
 
+
+    private GameMode gameMode = GameMode.USER;
+    private boolean started = false;
     private int score;
+    private int generation;
     private boolean feelerDebug = false;
     private Snake snake;
     private Apple apple;
@@ -25,8 +27,11 @@ class GamePanel extends JPanel implements KeyListener, ActionListener {
         this.setFocusable(true);
         this.requestFocus();
         this.snake = new Snake(this);
+
+
         this.apple = new Apple();
         this.apple.spawn();
+
         repaint();
     }
 
@@ -35,10 +40,14 @@ class GamePanel extends JPanel implements KeyListener, ActionListener {
         super.paintComponent(g);
         g.setColor(Color.WHITE);
         g.drawString("Score: " + score, 50, 50);
+        g.drawString("Size: " + snake.getSize(), 50, 60);
+        g.drawString("Generation: " + generation, 50, 70);
         Graphics2D g2 = (Graphics2D) g;
 
         snake.draw(g);
+
         apple.draw(g);
+        //apple.draw(g);
 
         if (feelerDebug) {
             g2.setColor(Color.PINK);
@@ -74,17 +83,40 @@ class GamePanel extends JPanel implements KeyListener, ActionListener {
     @Override
     public void keyPressed(KeyEvent e) {
 
-    }
 
-    @Override
-    public void keyReleased(KeyEvent e) {
+
+
+
+
+
+        if (gameMode.equals(GameMode.NEURAL)) return;
+
+
+        if (e.getKeyChar() == KeyEvent.VK_SPACE) {
+            System.out.println("yoink");
+
+            if (snake.getSnakeColor().equals(Color.RED) || !started) {
+                repaint();
+                snake.buildBody();
+                //snake.setSpeed(50);
+                snake.setDirection(Direction.RIGHT);
+                snake.setSnakeColor(Color.GREEN);
+                started = true;
+                return;
+
+            }
+
+
+        }
+
+
+        if (snake.getHead() == null) return;
         int headX = snake.getHead().x;
         int headY = snake.getHead().y;
 
         if (e.getKeyChar() == 'w') {
             if (snake.containsCoHeadSnake(headX + 5, headY - 5)) {
-                snake.setSnakeColor(Color.RED);
-                repaint();
+                kill();
                 return;
             } else if (snake.containsSnake(headX + 5, headY - 5)) {
                 return;
@@ -94,8 +126,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener {
         }
         if (e.getKeyChar() == 'a') {
             if (snake.containsCoHeadSnake(headX - 40, headY + 20)) {
-                snake.setSnakeColor(Color.RED);
-                repaint();
+                kill();
                 return;
             } else if (snake.containsSnake(headX - 40, headY + 20)) return;
             snake.setDirection(Direction.LEFT);
@@ -103,8 +134,7 @@ class GamePanel extends JPanel implements KeyListener, ActionListener {
 
         if (e.getKeyChar() == 'd') {
             if (snake.containsCoHeadSnake(headX + 70, headY + 20)) {
-                snake.setSnakeColor(Color.RED);
-                repaint();
+                kill();
                 return;
             } else if (snake.containsSnake(headX + 70, headY + 20)) return;
             snake.setDirection(Direction.RIGHT);
@@ -112,26 +142,33 @@ class GamePanel extends JPanel implements KeyListener, ActionListener {
 
         if (e.getKeyChar() == 's') {
             if (snake.containsCoHeadSnake(headX, headY + 70)) {
-                snake.setSnakeColor(Color.RED);
-                repaint();
+                kill();
                 return;
             } else if (snake.containsSnake(headX, headY + 70)) {
-                System.out.println("s cancel");
                 return;
             }
             snake.setDirection(Direction.DOWN);
         }
 
-        if (e.getKeyChar() == KeyEvent.VK_SPACE) {
 
-            if (snake.getSnakeColor().equals(Color.RED)) {
-                repaint();
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        if (e.getKeyChar() == 't') {
+            System.out.println("epic");
+            if (gameMode == GameMode.USER) {
+                gameMode = GameMode.NEURAL;
                 snake.buildBody();
+                //snake.setSpeed(10);
                 snake.setDirection(Direction.RIGHT);
                 snake.setSnakeColor(Color.GREEN);
+
+            } else {
+                gameMode = GameMode.USER;
             }
 
-
+            System.out.println("Enabled " + gameMode.name());
         }
     }
 
@@ -146,6 +183,30 @@ class GamePanel extends JPanel implements KeyListener, ActionListener {
     void addPoints(int amount) {
         score += amount;
     }
+
+    int getPoints() {
+        return score;
+    }
+
+    GameMode getGameMode() {
+        return gameMode;
+    }
+
+    private void kill() {
+
+        snake.setSnakeColor(Color.RED);
+        repaint();
+
+    }
+
+    void setPoints(int amount) {
+        score = amount;
+    }
+
+    void setGeneration(int generation) {
+        this.generation = generation;
+    }
+
 
 
 

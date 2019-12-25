@@ -24,6 +24,16 @@ public class Apple {
     }
 
     public void spawn() {
-        location = new Rectangle(new Random().nextInt(1920), new Random().nextInt(1080), 50, 50);
+        //
+        location = new Rectangle(550, 550, 50, 50);
+    }
+
+    //for testing purposes
+    public void spawn(boolean random) {
+        location = new Rectangle(new Random().nextInt(42) * 50 + 100, new Random().nextInt(20) * 50 + 100, 50, 50);
+    }
+
+    public Rectangle getLocation() {
+        return location;
     }
 }

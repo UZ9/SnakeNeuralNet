@@ -5,7 +5,6 @@ import javax.swing.*;
 public class GameLoop implements Runnable {
 
 
-    private final int SNAKE_SPEED = 500;
     private final int FPS = 60;
     private final int UPS = 60;
     private final boolean RENDER_TIME = true;
@@ -35,6 +34,7 @@ public class GameLoop implements Runnable {
         int frames = 0, ticks = 0;
         long timer = System.currentTimeMillis();
         long snakeInterval = System.currentTimeMillis();
+        long updateFitnessInterval = System.currentTimeMillis();
 
         while (running) {
 
@@ -42,6 +42,7 @@ public class GameLoop implements Runnable {
             deltaU += (currentTime - initialTime) / timeU;
             deltaF += (currentTime - initialTime) / timeF;
             initialTime = currentTime;
+
 
             if (deltaU >= 1) {
                 //getInput();
@@ -66,10 +67,16 @@ public class GameLoop implements Runnable {
                 timer += 1000;
             }
 
-            if (System.currentTimeMillis() - snakeInterval > SNAKE_SPEED) {
+            if (System.currentTimeMillis() - snakeInterval > panel.getSnake().getSpeed()) {
                 panel.getSnake().move();
 
-                snakeInterval += SNAKE_SPEED;
+                snakeInterval += panel.getSnake().getSpeed();
+            }
+
+            if (System.currentTimeMillis() - updateFitnessInterval > panel.getSnake().getSpeed() * 100) {
+                panel.getSnake().updateFitness();
+
+                updateFitnessInterval += panel.getSnake().getSpeed() * 100;
             }
         }
     }
